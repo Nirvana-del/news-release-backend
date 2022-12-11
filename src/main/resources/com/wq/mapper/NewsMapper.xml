@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wq.mapper.NewsMapper" >
+  <resultMap id="BaseResultMap" type="com.wq.entity.News" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="label" property="label" jdbcType="VARCHAR" />
+    <result column="author" property="author" jdbcType="VARCHAR" />
+    <result column="category_id" property="categoryId" jdbcType="INTEGER" />
+    <result column="region" property="region" jdbcType="VARCHAR" />
+    <result column="role_id" property="roleId" jdbcType="INTEGER" />
+    <result column="audit_state" property="auditState" jdbcType="INTEGER" />
+    <result column="publish_state" property="publishState" jdbcType="INTEGER" />
+    <result column="view" property="view" jdbcType="INTEGER" />
+    <result column="star" property="star" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="VARCHAR" />
+    <result column="publish_time" property="publishTime" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.wq.entity.News" extends="BaseResultMap" >
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, label, author, category_id, region, role_id, audit_state, publish_state, view, 
+    star, create_time, publish_time
+  </sql>
+  <sql id="Blob_Column_List" >
+    content
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.wq.entity.NewsExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from news
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.wq.entity.NewsExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from news
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from news
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from news
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.wq.entity.NewsExample" >
+    delete from news
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.wq.entity.News" >
+    insert into news (id, label, author, 
+      category_id, region, role_id, 
+      audit_state, publish_state, view, 
+      star, create_time, publish_time, 
+      content)
+    values (#{id,jdbcType=VARCHAR}, #{label,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR}, 
+      #{categoryId,jdbcType=INTEGER}, #{region,jdbcType=VARCHAR}, #{roleId,jdbcType=INTEGER}, 
+      #{auditState,jdbcType=INTEGER}, #{publishState,jdbcType=INTEGER}, #{view,jdbcType=INTEGER}, 
+      #{star,jdbcType=INTEGER}, #{createTime,jdbcType=VARCHAR}, #{publishTime,jdbcType=VARCHAR}, 
+      #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.wq.entity.News" >
+    insert into news
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="label != null" >
+        label,
+      </if>
+      <if test="author != null" >
+        author,
+      </if>
+      <if test="categoryId != null" >
+        category_id,
+      </if>
+      <if test="region != null" >
+        region,
+      </if>
+      <if test="roleId != null" >
+        role_id,
+      </if>
+      <if test="auditState != null" >
+        audit_state,
+      </if>
+      <if test="publishState != null" >
+        publish_state,
+      </if>
+      <if test="view != null" >
+        view,
+      </if>
+      <if test="star != null" >
+        star,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="publishTime != null" >
+        publish_time,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="label != null" >
+        #{label,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryId != null" >
+        #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="region != null" >
+        #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null" >
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="auditState != null" >
+        #{auditState,jdbcType=INTEGER},
+      </if>
+      <if test="publishState != null" >
+        #{publishState,jdbcType=INTEGER},
+      </if>
+      <if test="view != null" >
+        #{view,jdbcType=INTEGER},
+      </if>
+      <if test="star != null" >
+        #{star,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="publishTime != null" >
+        #{publishTime,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.wq.entity.NewsExample" resultType="java.lang.Integer" >
+    select count(*) from news
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update news
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.label != null" >
+        label = #{record.label,jdbcType=VARCHAR},
+      </if>
+      <if test="record.author != null" >
+        author = #{record.author,jdbcType=VARCHAR},
+      </if>
+      <if test="record.categoryId != null" >
+        category_id = #{record.categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="record.region != null" >
+        region = #{record.region,jdbcType=VARCHAR},
+      </if>
+      <if test="record.roleId != null" >
+        role_id = #{record.roleId,jdbcType=INTEGER},
+      </if>
+      <if test="record.auditState != null" >
+        audit_state = #{record.auditState,jdbcType=INTEGER},
+      </if>
+      <if test="record.publishState != null" >
+        publish_state = #{record.publishState,jdbcType=INTEGER},
+      </if>
+      <if test="record.view != null" >
+        view = #{record.view,jdbcType=INTEGER},
+      </if>
+      <if test="record.star != null" >
+        star = #{record.star,jdbcType=INTEGER},
+      </if>
+      <if test="record.createTime != null" >
+        create_time = #{record.createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.publishTime != null" >
+        publish_time = #{record.publishTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.content != null" >
+        content = #{record.content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update news
+    set id = #{record.id,jdbcType=VARCHAR},
+      label = #{record.label,jdbcType=VARCHAR},
+      author = #{record.author,jdbcType=VARCHAR},
+      category_id = #{record.categoryId,jdbcType=INTEGER},
+      region = #{record.region,jdbcType=VARCHAR},
+      role_id = #{record.roleId,jdbcType=INTEGER},
+      audit_state = #{record.auditState,jdbcType=INTEGER},
+      publish_state = #{record.publishState,jdbcType=INTEGER},
+      view = #{record.view,jdbcType=INTEGER},
+      star = #{record.star,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=VARCHAR},
+      publish_time = #{record.publishTime,jdbcType=VARCHAR},
+      content = #{record.content,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update news
+    set id = #{record.id,jdbcType=VARCHAR},
+      label = #{record.label,jdbcType=VARCHAR},
+      author = #{record.author,jdbcType=VARCHAR},
+      category_id = #{record.categoryId,jdbcType=INTEGER},
+      region = #{record.region,jdbcType=VARCHAR},
+      role_id = #{record.roleId,jdbcType=INTEGER},
+      audit_state = #{record.auditState,jdbcType=INTEGER},
+      publish_state = #{record.publishState,jdbcType=INTEGER},
+      view = #{record.view,jdbcType=INTEGER},
+      star = #{record.star,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=VARCHAR},
+      publish_time = #{record.publishTime,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.wq.entity.News" >
+    update news
+    <set >
+      <if test="label != null" >
+        label = #{label,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        author = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryId != null" >
+        category_id = #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="region != null" >
+        region = #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null" >
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="auditState != null" >
+        audit_state = #{auditState,jdbcType=INTEGER},
+      </if>
+      <if test="publishState != null" >
+        publish_state = #{publishState,jdbcType=INTEGER},
+      </if>
+      <if test="view != null" >
+        view = #{view,jdbcType=INTEGER},
+      </if>
+      <if test="star != null" >
+        star = #{star,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="publishTime != null" >
+        publish_time = #{publishTime,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.wq.entity.News" >
+    update news
+    set label = #{label,jdbcType=VARCHAR},
+      author = #{author,jdbcType=VARCHAR},
+      category_id = #{categoryId,jdbcType=INTEGER},
+      region = #{region,jdbcType=VARCHAR},
+      role_id = #{roleId,jdbcType=INTEGER},
+      audit_state = #{auditState,jdbcType=INTEGER},
+      publish_state = #{publishState,jdbcType=INTEGER},
+      view = #{view,jdbcType=INTEGER},
+      star = #{star,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=VARCHAR},
+      publish_time = #{publishTime,jdbcType=VARCHAR},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.wq.entity.News" >
+    update news
+    set label = #{label,jdbcType=VARCHAR},
+      author = #{author,jdbcType=VARCHAR},
+      category_id = #{categoryId,jdbcType=INTEGER},
+      region = #{region,jdbcType=VARCHAR},
+      role_id = #{roleId,jdbcType=INTEGER},
+      audit_state = #{auditState,jdbcType=INTEGER},
+      publish_state = #{publishState,jdbcType=INTEGER},
+      view = #{view,jdbcType=INTEGER},
+      star = #{star,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=VARCHAR},
+      publish_time = #{publishTime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
