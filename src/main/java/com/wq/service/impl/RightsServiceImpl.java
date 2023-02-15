@@ -22,16 +22,6 @@ public class RightsServiceImpl implements RightsService {
     RoleRightsMapper roleRightsMapper;
 
     /**
-     * 获取权限树
-     * @return
-     */
-    @Override
-    public List<Rights> getPermissionTree() {
-        RightsExample rightsExample = new RightsExample();
-       return rightsMapper.selectByExample(rightsExample);
-    }
-
-    /**
      * 删除一级权限
      * @param id
      */
@@ -80,7 +70,7 @@ public class RightsServiceImpl implements RightsService {
         System.out.println(roleRightsKeys);
         List<Integer> rightsIdList = roleRightsKeys.stream().map(RoleRightsKey::getRightId).collect(Collectors.toList());
 
-        System.out.println(rightsIdList);
+//        System.out.println(rightsIdList);
         // 根据 ID 列表查询 rights 表的path字段并返回 path 字符串数组
         RightsExample rightsExample = new RightsExample();
         RightsExample.Criteria criteria1 = rightsExample.createCriteria();

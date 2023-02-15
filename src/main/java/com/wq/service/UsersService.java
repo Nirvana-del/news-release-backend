@@ -14,4 +14,6 @@ public interface UsersService {
     void updateUser(String id, User user);
 
     List<User> searchUser(String username, String password);
+
+    User searchUserById(String userId);
 }

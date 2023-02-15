@@ -5,36 +5,22 @@ import javax.annotation.Resource;
 @Resource
 public class News {
     private String id;
-
     private String label;
-
     private String author;
-
     private Integer categoryId;
-
     private String region;
-
     private Integer roleId;
-
     private Integer auditState;
-
     private Integer publishState;
-
     private Integer view;
-
     private Integer star;
-
     private String createTime;
-
     private String publishTime;
-
     private String content;
-
     /**
      * 联表 category
      */
     private Category category;
-
     /**
      * 联表 role
      */

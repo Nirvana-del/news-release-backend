@@ -7,7 +7,7 @@ import com.wq.util.Tool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.HtmlUtils;
-
+import java.util.Map;
 import java.util.*;
 
 import static com.wq.util.Tool.newsExpandCategory;
@@ -16,8 +16,8 @@ import static com.wq.util.Tool.newsExpandRole;
 @RestController
 @RequestMapping("/news")
 @CrossOrigin(origins = "*")
-public class NewsController {
-    @Autowired
+    public class NewsController {
+        @Autowired
     NewsServiceImpl newsServiceImpl;
 
     Tool tool = new Tool();
@@ -26,7 +26,7 @@ public class NewsController {
      * @return
      */
     @GetMapping("/list")
-    public Result getNewsList(){
+    public Result<Map<String, List<News>>> getNewsList(){
         try {
             List<News> newsList = newsServiceImpl.getNewsList();
             Map<String, List<News>> map = new HashMap<>();
@@ -44,7 +44,7 @@ public class NewsController {
      * @return
      */
     @GetMapping("/draft_list")
-    public Result getDraftsList(@RequestParam("author") String author){
+    public Result<Map<String, List<News>>> getDraftsList(@RequestParam("author") String author){
         System.out.println(author);
         try {
             List<News> draftList = newsServiceImpl.getDraftsList(author);
@@ -63,7 +63,7 @@ public class NewsController {
      * @return
      */
     @GetMapping("/audit_list")
-    public Result getAuditList(@RequestParam("author") String author){
+    public Result<Map<String, List<News>>> getAuditList(@RequestParam("author") String author){
         System.out.println(author);
         try {
             List<News> auditList = newsServiceImpl.getAuditList(author);
@@ -84,7 +84,7 @@ public class NewsController {
      * @return
      */
     @GetMapping("/drafts")
-    public Result getAllAuditList(){
+    public Result<Map<String, List<News>>> getAllAuditList(){
         try {
             List<News> audits = newsServiceImpl.getAllAuditList();
             newsExpandCategory(audits);
@@ -104,7 +104,7 @@ public class NewsController {
      * @return
      */
     @GetMapping("/sunset_list")
-    public Result getSunsetList(){
+    public Result<Map<String, List<News>>> getSunsetList(){
         try {
             List<News> sunsetList = newsServiceImpl.getSunsetList();
             newsExpandCategory(sunsetList);
@@ -124,7 +124,7 @@ public class NewsController {
      * @return
      */
     @GetMapping("/published_list")
-    public Result getPublishedList(){
+    public Result<Map<String, List<News>>> getPublishedList(){
         try {
             List<News> publishedList = newsServiceImpl.getPublishedList();
             newsExpandCategory(publishedList);
@@ -143,7 +143,7 @@ public class NewsController {
      * @return
      */
     @GetMapping("/publish_list/{publishState}")
-    public Result getNewsListByPublishState(@PathVariable Integer publishState,
+    public Result<Map<String, List<News>>> getNewsListByPublishState(@PathVariable Integer publishState,
                                             @RequestParam("author") String author){
         System.out.println(publishState);
         System.out.println(author);
@@ -165,7 +165,7 @@ public class NewsController {
      * @return
      */
     @GetMapping("/most_browsing")
-    public Result getMostBrowsingNews(){
+    public Result<Map<String, List<News>>> getMostBrowsingNews(){
         try {
             List<News> newsList = newsServiceImpl.getMostBrowsingNews();
             if(newsList.size() >= 6){
@@ -187,7 +187,7 @@ public class NewsController {
      * @return
      */
     @GetMapping("/most_like")
-    public Result getMostLikesNews(){
+    public Result<Map<String, List<News>>> getMostLikesNews(){
         try {
             List<News> newsList = newsServiceImpl.getMostLikesNews();
             if(newsList.size() >= 6){
@@ -196,10 +196,10 @@ public class NewsController {
             newsExpandCategory(newsList);
             Map<String, List<News>> map = new HashMap<>();
             map.put("newsList", newsList);
-            System.out.println(map);
+//            System.out.println(map);
             return Result.success(map);
         }catch (Exception e){
-            System.out.println(e);
+//            System.out.println(e);
             return Result.error(null);
         }
     }
@@ -210,13 +210,14 @@ public class NewsController {
      * @return
      */
     @PostMapping
-    public Result addNews(News news){
+    public Result<Map<String, String>> addNews(News news){
         Map<String, String> map = new HashMap<>();
         try {
             // 使用 UUID 生成新闻 ID
             String newsId = UUID.randomUUID().toString();
             news.setId(newsId);
             String content = news.getContent();
+//            System.out.println(content);
             // 把html的特殊字符转换成符合Intel HEX文件的字符串
             String temp = HtmlUtils.htmlEscapeHex(content);
             news.setContent(temp);
@@ -240,7 +241,7 @@ public class NewsController {
      * @return
      */
     @PatchMapping("/{id}")
-    public Result updateNews(@PathVariable String id,News news){
+    public Result<Map<String, String>> updateNews(@PathVariable String id,News news){
         System.out.println(id);
         System.out.println(news);
         Map<String, String> map = new HashMap<>();
@@ -261,7 +262,7 @@ public class NewsController {
      * @return
      */
     @DeleteMapping("/{id}")
-    public Result deleteNews(@PathVariable String id){
+    public Result<Map<String, String>> deleteNews(@PathVariable String id){
         System.out.println(id);
         Map<String, String> map = new HashMap<>();
         try {
@@ -280,8 +281,8 @@ public class NewsController {
      * @param id
      * @return
      */
-    @GetMapping("/{id}")
-    public Result getNewsDetail(@PathVariable String id){
+    @GetMapping("/detail/{id}")
+    public Result<Map<String, News>> getNewsDetail(@PathVariable String id){
         System.out.println(id);
         try {
             Map<String, News> map = new HashMap<>();

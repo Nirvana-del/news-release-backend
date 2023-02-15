@@ -1,14 +1,18 @@
 package com.wq.controller;
 
+import com.wq.entity.Rights;
 import com.wq.entity.SubRights;
 import com.wq.service.impl.SubRightsServiceImpl;
 import com.wq.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.wq.util.Tool.*;
 
 
 @RestController
@@ -23,11 +27,14 @@ public class SubRightsController {
      * @return
      */
     @GetMapping("/list")
-    public Result getSubRightsList(){
+    public Result<Map<String, List<SubRights>>> getSubRightsList(HttpServletRequest request){
         try {
+            String token = request.getHeader("Authorization");
+            List<String> pathList = getPathListByToken(token);
             List<SubRights> subRightsList = subRightsServiceImpl.getSubRightsList();
+            List<SubRights> newSubRightsList = filterSubRightsTree(subRightsList, pathList);
             Map<String, List<SubRights>> map = new HashMap<>();
-            map.put("subRightsList", subRightsList);
+            map.put("subRightsList", newSubRightsList);
             System.out.println(map);
             return Result.success(map);
         }catch (Exception e){
@@ -42,7 +49,7 @@ public class SubRightsController {
      * @return
      */
     @DeleteMapping("/{id}")
-    public Result deleteSubRights(@PathVariable Integer id){
+    public Result<Map<String, String>> deleteSubRights(@PathVariable Integer id){
         Map<String, String> map = new HashMap<>();
         try {
             subRightsServiceImpl.deleteSubRights(id);
@@ -61,7 +68,7 @@ public class SubRightsController {
      * @return
      */
     @PatchMapping("/{id}")
-    public Result updateSubRights(@PathVariable Integer id, SubRights subRights){
+    public Result<Map<String, String>> updateSubRights(@PathVariable Integer id, SubRights subRights){
         System.out.println(subRights);
         try {
             Map<String, String> map = new HashMap<>();
@@ -74,6 +81,4 @@ public class SubRightsController {
             return Result.error(null);
         }
     }
-
-
 }

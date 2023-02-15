@@ -50,4 +50,9 @@ public class UsersServiceImpl implements UsersService {
         List<User> userList = userMapper.selectByExample(userExample);
        return userList;
     }
+    @Override
+    public User searchUserById(String userId) {
+        User user = userMapper.selectByPrimaryKey(userId);
+        return user;
+    }
 }

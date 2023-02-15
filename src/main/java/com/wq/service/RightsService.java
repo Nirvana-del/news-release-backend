@@ -5,8 +5,6 @@ import com.wq.entity.Rights;
 import java.util.List;
 
 public interface RightsService {
-    List<Rights> getPermissionTree();
-
     void deleteRights(Integer id);
 
     void updateRights(Rights rights);

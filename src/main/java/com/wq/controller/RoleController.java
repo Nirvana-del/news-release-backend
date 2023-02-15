@@ -33,7 +33,7 @@ public class RoleController {
      * @return
      */
     @GetMapping("/list")
-    public Result getRolesList(){
+    public Result<Map<String, List<Role>>> getRolesList(){
         try {
             List<Role> roleList = rolesServiceImpl.getRoleList();
             System.out.println(roleList);
@@ -55,7 +55,7 @@ public class RoleController {
      * @return
      */
     @DeleteMapping("/{id}")
-    public Result deleteRole(@PathVariable Integer id){
+    public Result<Map<String, String>> deleteRole(@PathVariable Integer id){
         try {
             Map<String, String> map = new HashMap<>();
             rolesServiceImpl.deleteRole(id);
@@ -75,7 +75,7 @@ public class RoleController {
      * @return
      */
     @PostMapping("/{roleId}")
-    public Result updateRoleRights(@PathVariable Integer roleId,@RequestBody JSONObject rightsMap){
+    public Result<Map<String, String>> updateRoleRights(@PathVariable Integer roleId,@RequestBody JSONObject rightsMap){
         System.out.println(roleId);
         System.out.println(rightsMap);
         try {

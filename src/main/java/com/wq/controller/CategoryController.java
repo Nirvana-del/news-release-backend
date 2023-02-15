@@ -18,7 +18,7 @@ public class CategoryController {
     CategoriesServiceImpl categoriesServiceImpl;
 
     @GetMapping
-    public Result getCategoryList(){
+    public Result<Map<String, List<Category>>> getCategoryList(){
         try {
             List<Category> categoryList = categoriesServiceImpl.getCategoryList();
             Map<String, List<Category>> map = new HashMap<>();
@@ -31,7 +31,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public Result addCategory(Category category){
+    public Result<Map<String, String>> addCategory(Category category){
         Map<String, String> map = new HashMap<>();
         try {
             System.out.println(category);
@@ -47,7 +47,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
-    public Result deleteCategory(@PathVariable Integer id){
+    public Result<Map<String, String>> deleteCategory(@PathVariable Integer id){
         System.out.println(id);
         Map<String, String> map = new HashMap<>();
         try {
@@ -63,7 +63,7 @@ public class CategoryController {
     }
 
     @PatchMapping("/{id}")
-    public Result updateCategory(@PathVariable Integer id, Category category){
+    public Result<Map<String, String>> updateCategory(@PathVariable Integer id, Category category){
         System.out.println(id);
         System.out.println(category);
         Map<String, String> map = new HashMap<>();

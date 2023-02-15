@@ -1,10 +1,7 @@
 package com.wq.util;
 
 import com.wq.entity.*;
-import com.wq.service.impl.CategoriesServiceImpl;
-import com.wq.service.impl.RightsServiceImpl;
-import com.wq.service.impl.RolesServiceImpl;
-import com.wq.service.impl.SubRightsServiceImpl;
+import com.wq.service.impl.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.HtmlUtils;
@@ -12,6 +9,8 @@ import org.springframework.web.util.HtmlUtils;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class Tool {
     private static Tool tool;
@@ -23,6 +22,7 @@ public class Tool {
         tool.rolesServiceImpl = this.rolesServiceImpl;
         tool.rightsServiceImpl = this.rightsServiceImpl;
         tool.subRightsServiceImpl = this.subRightsServiceImpl;
+        tool.usersServiceImpl = this.usersServiceImpl;
     }
     @Autowired
     CategoriesServiceImpl categoriesServiceImpl;
@@ -32,7 +32,8 @@ public class Tool {
     RightsServiceImpl rightsServiceImpl;
     @Autowired
     SubRightsServiceImpl subRightsServiceImpl;
-
+    @Autowired
+    UsersServiceImpl usersServiceImpl;
     /**
      * 联表 ：category,news
      * 新闻列表
@@ -193,5 +194,51 @@ public class Tool {
             String returnHtml = HtmlUtils.htmlUnescape(content);
             news.setContent(returnHtml);
         }
+    }
+
+    /**
+     * 过滤一级权限
+     * @param rightsList
+     * @param pathList
+     * @param flag 是否过滤子路由
+     * @param <T>
+     */
+    public static <T extends Rights> List<T> filterRightsTree(List<T> rightsList, List<String> pathList, Boolean flag) {
+    return rightsList.stream().filter(rights -> {
+        if (rights.getChildren() != null && rights.getChildren().size() > 0 && flag) {
+            rights.setChildren(filterSubRightsTree(rights.getChildren(), pathList));
+        }
+        return  pathList.contains(rights.getPath());
+    }).collect(Collectors.toList());
+}
+
+    /**
+     * 过滤二级权限
+     * @param rightsList
+     * @param pathList
+     * @return
+     * @param <T>
+     */
+    public static <T extends SubRights> List<T> filterSubRightsTree(List<T> rightsList, List<String> pathList) {
+    return rightsList.stream().filter(rights -> {
+        return pathList.contains(rights.getPath());
+    }).collect(Collectors.toList());
+    }
+
+    /**
+     * 根据 token 获取权限列表
+     * @param token
+     * @return
+     */
+    public static List<String> getPathListByToken(String token) {
+        if (token == null) {
+            throw new RuntimeException("无token或已过期 ，请重新登陆");
+        }
+        String userId = JwtUtil.getUserId(token);
+        User user = tool.usersServiceImpl.searchUserById(userId);
+        userExpandRole(user);
+        Role userRole = user.getRole();
+        roleExpandAllRights(userRole);
+        return userRole.getPathList();
     }
 }

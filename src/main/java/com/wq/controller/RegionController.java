@@ -19,7 +19,7 @@ public class RegionController {
     RegionsServiceImpl regionsServiceImpl;
 
     @GetMapping("/regions")
-    public Result getRegionList(){
+    public Result<Map<String, List<Region>>> getRegionList(){
         try {
             List<Region> regionList = regionsServiceImpl.getRegionList();
             Map<String, List<Region>> map = new HashMap<>();
